@@ -1,5 +1,6 @@
 const passport = require('passport');
 const localStrategy = require('./localStrategy');
+const githubStrategy = require('./githubStrategy');
 const User = require('../models/userModel');
 
 module.exports = () => {
@@ -14,4 +15,5 @@ module.exports = () => {
 	});
 
 	localStrategy();
+	githubStrategy();
 };

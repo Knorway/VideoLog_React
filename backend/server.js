@@ -2,9 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const connectDb = require('./db');
 const passportConfig = require('./passport/index');
+const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 
@@ -15,6 +19,8 @@ connectDb();
 passportConfig();
 // -------------------------- #
 
+app.use(helmet());
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -28,18 +34,17 @@ app.use(
 			secure: false,
 		},
 		name: 'session-cookie',
+		store: new MongoStore({ mongooseConnection: mongoose.connection }),
 	})
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/test', (req, res) => {
+	res.json({ message: 'backend' });
+});
 app.use('/api/auth', require('./routes/authRoutes'));
-
-// app.use('*', (req, res) => {
-// 	console.log('on');
-// 	res.send('API is running...');
-// });
 
 const PORT = process.env.PORT || 4000;
 

@@ -1,11 +1,19 @@
 const express = require('express');
-const { registerUser, loginUser, logout } = require('../controllers/userController');
+const {
+	// loginUser,
+	// loginGithub,
+	registerUser,
+	logout,
+	passportLogin,
+} = require('../controllers/userController');
 const passport = require('passport');
 
 const router = express.Router();
 
-router.route('/register').post(registerUser);
-router.route('/login').post(loginUser);
-router.route('/logout').get(logout);
+router.post('/register', registerUser);
+router.post('/login', passportLogin('local'));
+router.get('/logout', logout);
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/github/callback', passportLogin('github'));
 
 module.exports = router;
