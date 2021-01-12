@@ -1,25 +1,38 @@
 import { createAction, handleActions } from 'redux-actions';
 
-const onChangeTodo = createAction('todo/ADD');
-const addTodo = createAction('todo/ADD');
-const toggleTodo = createAction('todo/ADD');
-const removeTodo = createAction('todo/ADD');
+export const changeTodo = createAction('todo/CHANGE', (text) => text);
+export const addTodo = createAction('todo/ADD', (text) => ({
+	id: Date.now(),
+	text,
+	done: false,
+}));
+export const removeTodo = createAction('todo/REMOVE', (id) => id);
+export const toggleTodo = createAction('todo/TOGGLE', (id) => id);
 
 const reducer = handleActions(
 	{
-		[onChangeTodo]: (state, action) => ({ ...state, input: action.payload }),
-		[addTodo]: (state, action) => ({
+		[changeTodo]: (state, { payload: text }) => ({ ...state, input: text }),
+		[addTodo]: (state, { payload: todo }) => ({
 			...state,
-			todos: state.todos.concat(action.payload),
+			todos: state.todos.concat(todo),
+			input: '',
 		}),
-		[toggleTodo]: (state, action) => ({ ...state }),
-		[removeTodo]: (state, action) => ({ state }),
+		[toggleTodo]: (state, { payload: id }) => ({
+			...state,
+			todos: state.todos.map((todo) =>
+				todo.id === id ? { ...todo, done: !todo.done } : todo
+			),
+		}),
+		[removeTodo]: (state, { payload: id }) => ({
+			...state,
+			todos: state.todos.filter((todo) => todo.id !== id),
+		}),
 	},
 	{
 		input: '',
 		todos: [
-			{ id: 1, text: '리덕스 기초 배우기', done: true },
-			{ id: 2, text: '리액트와 리덕스 사용하기', done: false },
+			{ id: 1, text: '리덕스', done: false },
+			{ id: 2, text: '리액트 어렵다', done: true },
 		],
 	}
 );

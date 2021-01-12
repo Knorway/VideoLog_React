@@ -1,28 +1,22 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import { decreament, increament } from './modules/counter';
-
-const todoItem = () => {
-	return (
-		<div>
-			<h4>todo</h4>
-			<h4>X</h4>
-		</div>
-	);
-};
+import HomePage from './pages/HomePage';
+import JoinPage from './pages/JoinPage';
+import LoginPage from './pages/LoginPage';
+import UploadPage from './pages/UploadPage';
+import { MainContainer } from './styles/StyledConfig';
 
 const App = () => {
-	const dispatch = useDispatch();
-	const counter = useSelector((state) => state.todo);
-
 	return (
-		<div>
-			<form>
-				<input type='text' placeholder='todo here' />
-				<button>submit</button>
-			</form>
-		</div>
+		<BrowserRouter>
+			<Navbar />
+			<MainContainer className='container'>
+				<Route path='/' exact component={HomePage} />
+				<Route path='/login' exact component={LoginPage} />
+				<Route path='/join' exact component={JoinPage} />
+				<Route path='/upload' exact component={UploadPage} />
+			</MainContainer>
+		</BrowserRouter>
 	);
 };
 

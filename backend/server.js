@@ -42,7 +42,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/test', (req, res) => {
-	res.json({ message: 'backend' });
+	res.json({ message: req.user });
 });
 app.use('/api/auth', require('./routes/authRoutes'));
 
