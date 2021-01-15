@@ -8,6 +8,7 @@ const connectDb = require('./db');
 const passportConfig = require('./passport/index');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const { onlyFor } = require('./routes/middlewares');
 const MongoStore = require('connect-mongo')(session);
 
 const app = express();
@@ -41,9 +42,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/test', (req, res) => {
-	res.json({ message: req.user });
+app.get('/api/test', onlyFor('public'), (req, res) => {
+	console.log('object');
 });
+
+app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 
 const PORT = process.env.PORT || 4000;

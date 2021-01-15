@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserLogout } from '../modules/userLogin';
 
 const NavBar = styled.nav`
 	display: flex;
@@ -58,10 +60,24 @@ const NavBar = styled.nav`
 		a:nth-child(1) {
   		margin-right: 3rem;
 		}
+		a:nth-child(2) {
+  		margin-right: 3rem;
+		}
 	}
 `;
 
-function Navbar() {
+function Header() {
+	const { userInfo } = useSelector((state) => state.userLogin);
+	const history = useHistory();
+	const dispatch = useDispatch();
+
+	const logoutHandler = async () => {
+		await fetch('/api/auth/logout');
+		dispatch(setUserLogout());
+		localStorage.removeItem('userInfo');
+		history.push('/');
+	};
+
 	return (
 		<NavBar>
 			<Link to='/' className='logo'>
@@ -71,15 +87,30 @@ function Navbar() {
 				<input type='text' placeholder='Search' />
 			</form>
 			<div className='nav-items'>
-				<Link to='/join'>
-					<button>Join</button>
-				</Link>
-				<Link to='/login'>
-					<button>Login</button>
-				</Link>
+				{!userInfo && (
+					<>
+						<Link to='/join'>
+							<button>Join</button>
+						</Link>
+						<Link to='/login'>
+							<button>Login</button>
+						</Link>
+					</>
+				)}
+				{userInfo && (
+					<>
+						<Link to='/upload'>
+							<button>Upload</button>
+						</Link>
+						<Link to='/profile'>
+							<button>Profile</button>
+						</Link>
+						<button onClick={logoutHandler}>Logout</button>
+					</>
+				)}
 			</div>
 		</NavBar>
 	);
 }
 
-export default Navbar;
+export default Header;

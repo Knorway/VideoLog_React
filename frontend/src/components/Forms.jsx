@@ -1,8 +1,11 @@
-import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-import { setFormError, setFormLoading, setFormSuccess } from '../modules/authForm';
+import { setUserLogin } from '../modules/userLogin';
+import { useForms } from '../utils/useForms';
+import useAsync from '../utils/useAsync';
+import Loader from './Loader';
+import useFetch from '../utils/useFetch';
 
 const FormsContainer = styled.div`
 	display: flex;
@@ -16,6 +19,10 @@ const FormsContainer = styled.div`
 			color: #fff;
 			border: none;
 		}
+		small {
+			color: tomato;
+			margin-bottom: 15px;
+		}
 	}
 `;
 
@@ -24,127 +31,240 @@ const initialState = {
 	email: '',
 	password: '',
 	confirmPassword: '',
+	title: '',
+	description: '',
+	videoFile: '',
 };
 
-const onChange = (setForm) => (e) => {
-	setForm((prev) => ({
-		...prev,
-		[e.target.name]: e.target.value,
-	}));
-};
+// -----------------------------Forms----------------------------#
 
-export const LoginForm = ({ dispatch, authForm }) => {
-	const [form, setForm] = useState({ ...initialState });
-	const historyTest = useHistory();
+export const LoginForm = ({ dispatch, history }) => {
+	const [form, onChange, resetForm] = useForms(initialState);
 
-	const onSubmit = async (e) => {
-		e.preventDefault();
-		dispatch(setFormLoading());
-		try {
+	const [loading, data, error, fetchData] = useFetch(
+		async () => {
 			const { data } = await axios.post('/api/auth/login', form);
-			dispatch(setFormSuccess(data));
-		} catch (error) {
-			dispatch(setFormError(error));
+			return data;
+		},
+		(data) => {
+			dispatch(setUserLogin(data));
+			localStorage.setItem('userInfo', JSON.stringify(data));
 		}
-		setForm(initialState);
-		historyTest.push('/');
+	);
+
+	const onSubmit = (e) => {
+		e.preventDefault();
+		fetchData();
+		resetForm();
 	};
 
+	// if (data) {
+	// 	dispatch(setUserLogin(data));
+	// 	localStorage.setItem('userInfo', JSON.stringify(data));
+	// }
+
+	// const [state, REQUEST, SUCCESS, FAILURE] = useAsync();
+	// const { loading, data, error } = state;
+
+	// const onSubmit = async (e) => {
+	// 	e.preventDefault();
+
+	// 	try {
+	// 		REQUEST();
+	// 		const { data } = await axios.post('/api/auth/login', form);
+	// 		SUCCESS(data);
+	// 		dispatch(setUserLogin(data));
+
+	// 		localStorage.setItem('userInfo', JSON.stringify(data.user));
+	// 		history.push('/');
+	// 	} catch (error) {
+	// 		FAILURE(error);
+	// 		resetForm();
+	// 	}
+	// };
+
 	return (
-		<FormsContainer>
-			<form onSubmit={onSubmit}>
-				<input
-					type='text'
-					placeholder='Email'
-					name='email'
-					value={form.email}
-					onChange={onChange(setForm)}
-				/>
-				<input
-					type='password'
-					name='password'
-					placeholder='Password'
-					value={form.password}
-					onChange={onChange(setForm)}
-				/>
-				<button>Login</button>
-				<button className='github-btn'>Login with Github</button>
-			</form>
-		</FormsContainer>
+		<>
+			{loading && <Loader />}
+			<FormsContainer>
+				<form onSubmit={onSubmit}>
+					<input
+						type='text'
+						placeholder='Email'
+						name='email'
+						value={form.email}
+						onChange={onChange}
+						required
+					/>
+					<input
+						type='password'
+						name='password'
+						placeholder='Password'
+						value={form.password}
+						onChange={onChange}
+						required
+					/>
+					{error && <small>Please check you account or password</small>}
+					<button className='button button-primary'>Login</button>
+					<button className='github-btn'>Login with Github</button>
+				</form>
+			</FormsContainer>
+		</>
 	);
 };
 
-export const JoinForm = ({ dispatch, authForm }) => {
-	const [form, setForm] = useState({ ...initialState });
+export const JoinForm = ({ dispatch, userLogin, history }) => {
+	const [form, onChange, resetForm] = useForms(initialState);
+	const [state, REQUEST, SUCCESS, FAILURE] = useAsync();
+	const { loading, data, error } = state;
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		dispatch(setFormLoading());
+
 		try {
+			REQUEST();
 			const { data } = await axios.post('/api/auth/register', form);
-			dispatch(setFormSuccess(data));
+			SUCCESS(data);
+			dispatch(setUserLogin(data));
+
+			localStorage.setItem('userInfo', JSON.stringify(data));
+			history.push('/');
 		} catch (error) {
-			dispatch(setFormError(error));
+			FAILURE(error);
+			resetForm();
 		}
-		setForm(initialState);
+	};
+
+	return (
+		<>
+			{loading && <Loader />}
+			<FormsContainer>
+				<form onSubmit={onSubmit}>
+					<input
+						type='text'
+						placeholder='Name'
+						name='name'
+						value={form.name}
+						onChange={onChange}
+						required
+					/>
+					<input
+						type='email'
+						placeholder='Email'
+						name='email'
+						value={form.email}
+						onChange={onChange}
+						required
+					/>
+					<input
+						type='password'
+						placeholder='Password'
+						name='password'
+						value={form.password}
+						onChange={onChange}
+						required
+					/>
+					<input
+						type='password'
+						placeholder='Confirm your password'
+						name='confirmPassword'
+						value={form.confirmPassword}
+						onChange={onChange}
+						required
+					/>
+					{error && <small>Please check you account or password</small>}
+					<button className='button-primary'>Join</button>
+				</form>
+			</FormsContainer>
+		</>
+	);
+};
+
+export const UploadForm = ({ dispatch, userLogin }) => {
+	const [form, onChange] = useForms(initialState);
+	const history = useHistory();
+
+	// useAsync refactoring
+	const onSubmit = async (e) => {
+		e.preventDefault();
+		const formData = new FormData();
+		formData.append('videoFile', form.videoFile);
+		formData.append('form', JSON.stringify(form));
+
+		const { data: video } = await axios.post('/api/videos', formData);
+		history.push(`/videos/${video.id}`);
 	};
 
 	return (
 		<FormsContainer>
 			<form onSubmit={onSubmit}>
-				<input
-					type='text'
-					placeholder='Name'
-					name='name'
-					value={form.name}
-					onChange={onChange(setForm)}
-				/>
-				<input
-					type='email'
-					placeholder='Email'
-					name='email'
-					value={form.email}
-					onChange={onChange(setForm)}
-				/>
-				<input
-					type='password'
-					placeholder='Password'
-					name='password'
-					value={form.password}
-					onChange={onChange(setForm)}
-				/>
-				<input
-					type='password'
-					placeholder='Confirm your password'
-					name='confirmPassword'
-					value={form.confirmPassword}
-					onChange={onChange(setForm)}
-				/>
-				<button>Join</button>
-			</form>
-		</FormsContainer>
-	);
-};
-
-export const UploadForm = ({ dispatch, authForm }) => {
-	return (
-		<FormsContainer>
-			<form>
 				<label htmlFor='videoUploadInput'>video file</label>
 				<input
 					type='file'
 					id='videoUploadInput'
 					name='videoFile'
 					accept='video/*'
-					required='required'
+					required
+					onChange={onChange}
 				></input>
-				<input type='text' placeholder='title' name='title' required='required' />
+				<input
+					type='text'
+					placeholder='title'
+					name='title'
+					required
+					onChange={onChange}
+				/>
 				<textarea
 					name='description'
 					placeholder='description'
-					required='required'
+					required
+					onChange={onChange}
 				/>
 				<button>Upload</button>
+			</form>
+		</FormsContainer>
+	);
+};
+
+export const EditForm = ({ history, dispatch, userLogin, id }) => {
+	const [form, onChange] = useForms(initialState);
+
+	// useAsync ?
+	const onSubmit = async (e) => {
+		e.preventDefault();
+		await axios.put(`/api/videos/${id}`, form);
+		history.push(`/videos/${id}`);
+	};
+
+	const onDelete = async (e) => {
+		e.preventDefault();
+		if (window.confirm('are you sure to delete this video?')) {
+			await axios.delete(`/api/videos/${id}`);
+			history.push('/');
+		}
+	};
+
+	return (
+		<FormsContainer>
+			<form onSubmit={onSubmit}>
+				<h4>Edit Video</h4>
+				<input
+					type='text'
+					placeholder='title'
+					name='title'
+					required
+					onChange={onChange}
+				/>
+				<textarea
+					name='description'
+					placeholder='description'
+					required
+					onChange={onChange}
+				/>
+				<button>Upload</button>
+				<button className='button-danger' onClick={onDelete}>
+					Delete
+				</button>
 			</form>
 		</FormsContainer>
 	);

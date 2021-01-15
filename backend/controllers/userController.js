@@ -23,10 +23,12 @@ module.exports.registerUser = async (req, res) => {
 
 		if (user) {
 			res.status(200).json({
-				id: user.id,
-				name: user.name,
-				email: user.email,
-				isAdmin: user.isAdmin,
+				user: {
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					isAdmin: user.isAdmin,
+				},
 			});
 		} else {
 			res.status(400);
@@ -41,8 +43,8 @@ module.exports.passportLogin = (option) => async (req, res, next) => {
 	passport.authenticate(option, (authError, user, _) => {
 		if (authError) {
 			console.error(authError);
-			res.status(400);
-			return res.json({ message: authError, succsess: true });
+			// res.status(400);
+			return res.status(400).json({ message: authError, succsess: true });
 		}
 
 		return req.logIn(user, (loginError) => {
@@ -50,7 +52,16 @@ module.exports.passportLogin = (option) => async (req, res, next) => {
 				console.error(loginError);
 				return next(loginError);
 			}
-			return res.json({ message: 'Login success', succsess: true });
+			return res.json({
+				message: 'Login success',
+				succsess: true,
+				user: {
+					id: req.user.id,
+					name: req.user.name,
+					email: req.user.email,
+					isAdmin: req.user.isAdmin,
+				},
+			});
 		});
 	})(req, res, next);
 };

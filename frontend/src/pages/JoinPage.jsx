@@ -4,9 +4,18 @@ import { JoinForm } from '../components/Forms';
 
 const JoinPage = ({ history }) => {
 	const dispatch = useDispatch();
-	const { data } = useSelector((state) => state.authForm);
+	const userLogin = useSelector((state) => state.userLogin);
+	const { userInfo } = userLogin;
 
-	return <JoinForm dispatch={dispatch} />;
+	useEffect(() => {
+		if (userInfo) {
+			history.push('/');
+		}
+	});
+
+	if (userInfo) return null;
+
+	return <JoinForm dispatch={dispatch} history={history} userLogin={userLogin} />;
 };
 
 export default JoinPage;

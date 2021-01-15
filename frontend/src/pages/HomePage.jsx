@@ -1,16 +1,30 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import VideoList from '../components/VideoList';
+import axios from 'axios';
+import Loader from '../components/Loader';
+import useAsync from '../utils/useAsync';
 
 const HomePage = () => {
-	useEffect(() => {
-		fetch('/test')
-			.then((res) => res.json())
-			.then((data) => console.log(data));
+	const [state, REQUEST, SUCCESS] = useAsync();
+	const { loading, data: videos } = state;
+
+	const fetctVideos = useCallback(async () => {
+		REQUEST();
+		const { data } = await axios.get('/api/videos');
+		SUCCESS(data);
+		//eslint-disable-next-line
 	}, []);
+
+	useEffect(() => {
+		fetctVideos();
+	}, [fetctVideos]);
+
+	if (loading) return <Loader />;
+	if (!videos) return null;
 
 	return (
 		<>
-			<VideoList />
+			<VideoList videos={videos} />
 		</>
 	);
 };
