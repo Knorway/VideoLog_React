@@ -10,12 +10,12 @@ const useFetch = (promiseFn, callback) => {
 
 		try {
 			const response = await promiseFn();
-			setLoading(false);
 			setData(response);
+			setLoading(false);
 			callback(response);
 		} catch (error) {
-			setLoading(false);
 			setError(error);
+			setLoading(false);
 		}
 	};
 

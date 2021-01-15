@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserLogout } from '../modules/userLogin';
+import SearchBox from './SearchBox';
 
 const NavBar = styled.nav`
 	display: flex;
@@ -10,7 +11,6 @@ const NavBar = styled.nav`
 		flex-direction: column-reverse;
 		}
 	}
-
 	.logo {
 		flex: 1;
 		padding-top: 1rem;
@@ -27,27 +27,6 @@ const NavBar = styled.nav`
 			}
 		}
 	}
-
-	form {
-		flex: 1;
-		margin-top: 1rem;
-		width: 80%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		input {
-			width: 90%;
-		}
-		@media(max-width: 920px) {
-			margin-bottom: 0;
-			width: 100%;
-			margin-bottom: 3rem;	
-			input {
-				width: 80%;
-			}
-		}
-	}
-
 	.nav-items {
 		flex: 1;
 		padding-top: 1rem;
@@ -83,9 +62,7 @@ function Header() {
 			<Link to='/' className='logo'>
 				<h5>VideoLog</h5>
 			</Link>
-			<form>
-				<input type='text' placeholder='Search' />
-			</form>
+			<SearchBox history={history} />
 			<div className='nav-items'>
 				{!userInfo && (
 					<>

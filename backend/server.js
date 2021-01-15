@@ -8,7 +8,6 @@ const connectDb = require('./db');
 const passportConfig = require('./passport/index');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const { onlyFor } = require('./routes/middlewares');
 const MongoStore = require('connect-mongo')(session);
 
 const app = express();
@@ -33,6 +32,7 @@ app.use(
 		cookie: {
 			httpOnly: true,
 			secure: false,
+			maxAge: 60 * 60 * 1000,
 		},
 		name: 'session-cookie',
 		store: new MongoStore({ mongooseConnection: mongoose.connection }),
@@ -41,10 +41,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get('/api/test', onlyFor('public'), (req, res) => {
-	console.log('object');
-});
 
 app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));

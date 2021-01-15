@@ -47,8 +47,17 @@ module.exports.deleteVideo = async (req, res) => {
 };
 
 module.exports.getVideoList = async (req, res) => {
+	const keyword = req.query.keyword
+		? {
+				title: {
+					$regex: req.query.keyword,
+					$options: 'i',
+				},
+		  }
+		: {};
+
 	try {
-		const videos = await Video.find({});
+		const videos = await Video.find(keyword);
 		res.status(200).json(videos);
 	} catch (error) {
 		console.error(error);
@@ -58,9 +67,8 @@ module.exports.getVideoList = async (req, res) => {
 
 module.exports.getVideo = async (req, res) => {
 	const { id } = req.params;
-
 	try {
-		const video = await Video.findById(id);
+		const video = await Video.findById(id).populate('creator', 'name email id');
 		res.status(200).json(video);
 	} catch (error) {
 		console.error(error);
@@ -86,4 +94,17 @@ module.exports.postComment = async (req, res) => {
 	}
 };
 
-module.exports.deleteComment = async (req, res) => {};
+module.exports.deleteComment = async (req, res) => {
+	const { id } = req.params;
+	const { commentId } = req.body;
+
+	try {
+		const video = await Video.findById(id);
+		video.comments = video.comments.filter((comment) => comment.id !== commentId);
+		await video.save();
+		res.status(200).json({ message: 'comment deleted', success: true });
+	} catch (error) {
+		console.error(error);
+		res.status(400).json({ message: 'failed to delete comment', success: false });
+	}
+};

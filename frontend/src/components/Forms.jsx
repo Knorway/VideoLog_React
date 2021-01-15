@@ -10,19 +10,27 @@ import useFetch from '../utils/useFetch';
 const FormsContainer = styled.div`
 	display: flex;
 	justify-content: center;
+	.form-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+	}
 	form {
 		display: flex;
 		flex-direction: column;
 		width: 70%;
-		.github-btn {
-			background-color: #555;
-			color: #fff;
-			border: none;
-		}
+		margin-bottom: 0;
 		small {
 			color: tomato;
 			margin-bottom: 15px;
 		}
+	}
+	.github-btn {
+		width: 70%;
+		background-color: #555;
+		color: #fff;
+		border: none;
 	}
 `;
 
@@ -48,7 +56,7 @@ export const LoginForm = ({ dispatch, history }) => {
 		},
 		(data) => {
 			dispatch(setUserLogin(data));
-			localStorage.setItem('userInfo', JSON.stringify(data));
+			localStorage.setItem('userInfo', JSON.stringify(data.user));
 		}
 	);
 
@@ -58,56 +66,33 @@ export const LoginForm = ({ dispatch, history }) => {
 		resetForm();
 	};
 
-	// if (data) {
-	// 	dispatch(setUserLogin(data));
-	// 	localStorage.setItem('userInfo', JSON.stringify(data));
-	// }
-
-	// const [state, REQUEST, SUCCESS, FAILURE] = useAsync();
-	// const { loading, data, error } = state;
-
-	// const onSubmit = async (e) => {
-	// 	e.preventDefault();
-
-	// 	try {
-	// 		REQUEST();
-	// 		const { data } = await axios.post('/api/auth/login', form);
-	// 		SUCCESS(data);
-	// 		dispatch(setUserLogin(data));
-
-	// 		localStorage.setItem('userInfo', JSON.stringify(data.user));
-	// 		history.push('/');
-	// 	} catch (error) {
-	// 		FAILURE(error);
-	// 		resetForm();
-	// 	}
-	// };
-
 	return (
 		<>
 			{loading && <Loader />}
 			<FormsContainer>
-				<form onSubmit={onSubmit}>
-					<input
-						type='text'
-						placeholder='Email'
-						name='email'
-						value={form.email}
-						onChange={onChange}
-						required
-					/>
-					<input
-						type='password'
-						name='password'
-						placeholder='Password'
-						value={form.password}
-						onChange={onChange}
-						required
-					/>
-					{error && <small>Please check you account or password</small>}
-					<button className='button button-primary'>Login</button>
-					<button className='github-btn'>Login with Github</button>
-				</form>
+				<div className='form-container'>
+					<em>Demo ID here</em>
+					<form onSubmit={onSubmit}>
+						<input
+							type='text'
+							placeholder='Email'
+							name='email'
+							value={form.email}
+							onChange={onChange}
+							required
+						/>
+						<input
+							type='password'
+							name='password'
+							placeholder='Password'
+							value={form.password}
+							onChange={onChange}
+							required
+						/>
+						{error && <small>Please check you account or password</small>}
+						<button className='button button-primary'>Login</button>
+					</form>
+				</div>
 			</FormsContainer>
 		</>
 	);
@@ -127,7 +112,7 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 			SUCCESS(data);
 			dispatch(setUserLogin(data));
 
-			localStorage.setItem('userInfo', JSON.stringify(data));
+			localStorage.setItem('userInfo', JSON.stringify(data.user));
 			history.push('/');
 		} catch (error) {
 			FAILURE(error);

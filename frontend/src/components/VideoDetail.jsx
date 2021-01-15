@@ -17,7 +17,7 @@ const VideoDetailContainer = styled.div`
 
 const VideoDetail = ({ video }) => {
 	const { userInfo } = useSelector((state) => state.userLogin);
-	const isCreator = userInfo?.id === video.creator;
+	const isCreator = userInfo?.id === video.creator._id;
 
 	console.log(video);
 
@@ -30,7 +30,16 @@ const VideoDetail = ({ video }) => {
 			</div>
 			<div>
 				<h5>{video.title}</h5>
-				<p>{video.creator}</p>
+				<Link
+					to={
+						video.creator._id === userInfo?.id
+							? `/profile`
+							: `/users/${video.creator._id}`
+					}
+				>
+					{video.creator.name}
+				</Link>
+				<p>{video.creator.email}</p>
 				{isCreator && (
 					<Link to={`/videos/${video._id}/edit`}>
 						<button>Edit Video</button>
