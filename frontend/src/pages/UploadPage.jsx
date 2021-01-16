@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { UploadForm } from '../components/Forms';
+import VideoRecorder from '../components/VideoRecorder';
 
 const UploadPage = () => {
 	const history = useHistory();
@@ -15,7 +16,12 @@ const UploadPage = () => {
 
 	if (!userLogin) return null;
 
-	return <UploadForm />;
+	return (
+		<>
+			<VideoRecorder />
+			<UploadForm />
+		</>
+	);
 };
 
 export default UploadPage;

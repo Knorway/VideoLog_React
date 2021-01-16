@@ -3,6 +3,7 @@ const Video = require('../models/videoModel');
 module.exports.uploadVideo = async (req, res) => {
 	const { location } = req.file;
 	const { title, description } = JSON.parse(req.body.form);
+	console.log(location, title, description);
 
 	try {
 		const newVideo = await Video.create({
