@@ -171,13 +171,17 @@ export const UploadForm = ({ dispatch, userLogin }) => {
 
 	// useAsync refactoring
 	const onSubmit = async (e) => {
-		e.preventDefault();
-		const formData = new FormData();
-		formData.append('videoFile', form.videoFile);
-		formData.append('form', JSON.stringify(form));
+		try {
+			e.preventDefault();
+			const formData = new FormData();
+			formData.append('videoFile', form.videoFile);
+			formData.append('form', JSON.stringify(form));
 
-		const { data: video } = await axios.post('/api/videos', formData);
-		history.push(`/videos/${video.id}`);
+			const { data: video } = await axios.post('/api/videos', formData);
+			history.push(`/videos/${video.id}`);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
