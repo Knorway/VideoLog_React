@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -17,38 +18,39 @@ const VideoListGrid = styled.div`
 		border: 1px solid #e6e6e6;
 		border-radius: 5px;
 		overflow: hidden;
+		.card-title {
+			font-weight: 100;
+		}
 		video {
 			width: 100%;
 			height: 300px;
 			object-fit: cover;
 		}
+		em {
+			font-size: 12px;
+		}
 		.card-summary {
 			padding: 12px;
-			em {
-				font-size: 12px;
+			.card-postedAt {
+				display: inline-block;
+				margin-right: 5px;
 			}
-			.card-date-icon {
-				color: darkgray;
-				font-size: 12px;
-				margin-right: 3px;
+			.card-dateicon {
+				width: 13px;
+				height: 13px;
+				vertical-align: text-top;
 			}
-			.card-views-info {
-				.card-view-icon {
-					color: darkgray;
-					font-size: 11px;
-					margin-left: 6px;
-				}
-				em {
-					margin-left: 2px;
-					color: darkgray;
-					font-size: 11px;
-				}
+			.card-creator {
+				/* color: #5c7cfa; */
+				text-decoration: none;
 			}
 		}
 	}
 `;
 
 const VideoList = ({ videos }) => {
+	const { userInfo } = useSelector((state) => state.userLogin);
+
 	return (
 		<VideoListGrid>
 			{videos.map((video) => (
@@ -58,7 +60,22 @@ const VideoList = ({ videos }) => {
 							<source src={video.fileUrl} />
 						</video>
 					</Link>
-					<h4 className='card-summary'>{video.title}</h4>
+					<div className='card-summary'>
+						<h5 className='card-title'>{video.title}</h5>
+						<em className='card-postedAt'>Posted at</em>
+						<em>{video.createdAt.substring(0, 10)}</em>
+						<em> by</em>
+						<Link
+							to={
+								video.creator._id === userInfo?.id
+									? `/profile`
+									: `/users/${video.creator._id}`
+							}
+							className='card-creator'
+						>
+							<em className='card-creator'> {video.creator.name}</em>
+						</Link>
+					</div>
 				</div>
 			))}
 		</VideoListGrid>

@@ -71,11 +71,11 @@ export const LoginForm = ({ dispatch, history }) => {
 			{loading && <Loader />}
 			<FormsContainer>
 				<div className='form-container'>
-					<em>Demo ID here</em>
+					<em>데모아이디 적어두기</em>
 					<form onSubmit={onSubmit}>
 						<input
 							type='text'
-							placeholder='Email'
+							placeholder='이메일'
 							name='email'
 							value={form.email}
 							onChange={onChange}
@@ -84,13 +84,13 @@ export const LoginForm = ({ dispatch, history }) => {
 						<input
 							type='password'
 							name='password'
-							placeholder='Password'
+							placeholder='비밀번호'
 							value={form.password}
 							onChange={onChange}
 							required
 						/>
-						{error && <small>Please check you account or password</small>}
-						<button className='button button-primary'>Login</button>
+						{error && <small>계정이나 비밀번호를 다시 확인해주세요</small>}
+						<button className='button button-primary'>로그인</button>
 					</form>
 				</div>
 			</FormsContainer>
@@ -127,7 +127,7 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 				<form onSubmit={onSubmit}>
 					<input
 						type='text'
-						placeholder='Name'
+						placeholder='이름'
 						name='name'
 						value={form.name}
 						onChange={onChange}
@@ -135,7 +135,7 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 					/>
 					<input
 						type='email'
-						placeholder='Email'
+						placeholder='이메일'
 						name='email'
 						value={form.email}
 						onChange={onChange}
@@ -143,7 +143,7 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 					/>
 					<input
 						type='password'
-						placeholder='Password'
+						placeholder='비밀번호'
 						name='password'
 						value={form.password}
 						onChange={onChange}
@@ -151,14 +151,14 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 					/>
 					<input
 						type='password'
-						placeholder='Confirm your password'
+						placeholder='비밀번호 확인'
 						name='confirmPassword'
 						value={form.confirmPassword}
 						onChange={onChange}
 						required
 					/>
-					{error && <small>Please check you account or password</small>}
-					<button className='button-primary'>Join</button>
+					{error && <small>계정이나 비밀번호를 다시 확인해주세요</small>}
+					<button className='button-primary'>가입</button>
 				</form>
 			</FormsContainer>
 		</>
@@ -187,7 +187,7 @@ export const UploadForm = ({ dispatch, userLogin }) => {
 	return (
 		<FormsContainer>
 			<form onSubmit={onSubmit}>
-				<label htmlFor='videoUploadInput'>video file</label>
+				<label htmlFor='videoUploadInput'>비디오 파일 선택</label>
 				<input
 					type='file'
 					id='videoUploadInput'
@@ -198,18 +198,18 @@ export const UploadForm = ({ dispatch, userLogin }) => {
 				></input>
 				<input
 					type='text'
-					placeholder='title'
+					placeholder='제목'
 					name='title'
 					required
 					onChange={onChange}
 				/>
 				<textarea
 					name='description'
-					placeholder='description'
+					placeholder='내용'
 					required
 					onChange={onChange}
 				/>
-				<button>Upload</button>
+				<button>업로드</button>
 			</form>
 		</FormsContainer>
 	);

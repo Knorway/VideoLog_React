@@ -17,6 +17,7 @@ const VideoRecorderContainer = styled.div`
 		video {
 			width: 100%;
 			margin-bottom: 20px;
+			background-color: #495057;
 		}
 	}
 `;
@@ -72,12 +73,12 @@ const VideoRecorder = () => {
 				<video ref={videoRef}></video>
 				{!onRecording && (
 					<button onClick={onRecording ? stopRecording : getPreview}>
-						start recording
+						녹화 시작하기
 					</button>
 				)}
 				{onRecording && (
 					<button className='button-danger' onClick={stopRecording}>
-						stop recording
+						녹화 그만하기
 					</button>
 				)}
 			</div>

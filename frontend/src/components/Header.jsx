@@ -67,22 +67,22 @@ function Header() {
 				{!userInfo && (
 					<>
 						<Link to='/join'>
-							<button>Join</button>
+							<button>가입</button>
 						</Link>
 						<Link to='/login'>
-							<button>Login</button>
+							<button>로그인</button>
 						</Link>
 					</>
 				)}
 				{userInfo && (
 					<>
 						<Link to='/upload'>
-							<button>Upload</button>
+							<button>업로드</button>
 						</Link>
 						<Link to='/profile'>
-							<button>Profile</button>
+							<button>프로파일</button>
 						</Link>
-						<button onClick={logoutHandler}>Logout</button>
+						<button onClick={logoutHandler}>로그아웃</button>
 					</>
 				)}
 			</div>

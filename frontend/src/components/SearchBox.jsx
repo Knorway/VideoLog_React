@@ -42,7 +42,7 @@ const SearchBox = ({ history }) => {
 		<SearchBoxContainer onSubmit={onSubmit}>
 			<input
 				type='text'
-				placeholder='Search'
+				placeholder='검색'
 				onChange={(e) => setKeyword(e.target.value)}
 				value={keyword}
 			/>

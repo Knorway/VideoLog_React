@@ -7,7 +7,7 @@ import ProfilePage from './pages/ProfilePage';
 import SearchPage from './pages/SearchPage';
 import UploadPage from './pages/UploadPage';
 import VideoDetailPage from './pages/VideoDetailPage';
-import videoEditPage from './pages/videoEditPage';
+import VideoEditPage from './pages/VideoEditPage';
 import { MainContainer } from './styles/StyledConfig';
 
 const App = () => {
@@ -23,7 +23,7 @@ const App = () => {
 				<Route path='/users/:id' component={ProfilePage} />
 				<Route path='/search/:keyword' component={SearchPage} />
 				<Route path='/videos/:id' exact component={VideoDetailPage} />
-				<Route path='/videos/:id/edit' component={videoEditPage} />
+				<Route path='/videos/:id/edit' component={VideoEditPage} />
 			</MainContainer>
 			{/* switch */}
 		</Router>

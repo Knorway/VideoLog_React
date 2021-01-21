@@ -3,7 +3,6 @@ const Video = require('../models/videoModel');
 module.exports.uploadVideo = async (req, res) => {
 	const { location } = req.file;
 	const { title, description } = JSON.parse(req.body.form);
-	console.log(location, title, description);
 
 	try {
 		const newVideo = await Video.create({
@@ -54,11 +53,12 @@ module.exports.getVideoList = async (req, res) => {
 					$regex: req.query.keyword,
 					$options: 'i',
 				},
+				// eslint-disable-next-line no-mixed-spaces-and-tabs
 		  }
 		: {};
 
 	try {
-		const videos = await Video.find(keyword);
+		const videos = await Video.find(keyword).populate('creator', 'name');
 		res.status(200).json(videos);
 	} catch (error) {
 		console.error(error);
@@ -70,6 +70,11 @@ module.exports.getVideo = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const video = await Video.findById(id).populate('creator', 'name email id');
+		video.comments = video.comments.sort((a, b) => {
+			if (a.createdAt < b.createdAt) return 1;
+			if (a.createdAt > b.createdAt) return -1;
+			return 0;
+		});
 		res.status(200).json(video);
 	} catch (error) {
 		console.error(error);

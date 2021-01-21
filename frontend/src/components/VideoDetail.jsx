@@ -6,20 +6,25 @@ const VideoDetailContainer = styled.div`
 	.videoContainer {
 		display: flex;
 		justify-content: center;
+		margin-bottom: 1rem;
 		video {
 			max-width: 100%;
-			max-height: 600px;
-			/* max-height: 700px; */
+			max-height: 700px;
 			outline: none;
 		}
+	}
+	.video-title {
+		font-weight: 100;
+	}
+	.video-description {
+		font-weight: 100;
 	}
 `;
 
 const VideoDetail = ({ video }) => {
 	const { userInfo } = useSelector((state) => state.userLogin);
 	const isCreator = userInfo?.id === video.creator._id;
-
-	console.log(video);
+	console.log(userInfo, video.creator._id);
 
 	return (
 		<VideoDetailContainer>
@@ -29,7 +34,7 @@ const VideoDetail = ({ video }) => {
 				</video>
 			</div>
 			<div>
-				<h5>{video.title}</h5>
+				<h5 className='video-title'>{video.title}</h5>
 				<Link
 					to={
 						video.creator._id === userInfo?.id
@@ -42,11 +47,11 @@ const VideoDetail = ({ video }) => {
 				<p>{video.creator.email}</p>
 				{isCreator && (
 					<Link to={`/videos/${video._id}/edit`}>
-						<button>Edit Video</button>
+						<button>비디오 수정하기</button>
 					</Link>
 				)}
 				<hr />
-				<h6>{video.description}</h6>
+				<h6 className='video-description'>{video.description}</h6>
 			</div>
 		</VideoDetailContainer>
 	);

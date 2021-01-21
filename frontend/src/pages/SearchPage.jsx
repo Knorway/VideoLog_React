@@ -26,7 +26,7 @@ const SearchPage = ({ match }) => {
 		<>
 			<h3
 				style={{ paddingLeft: '2rem' }}
-			>{`Search Result for Keyword: ${keyword}`}</h3>
+			>{`키워드 '${keyword}' 에 대한 검색 결과입니다`}</h3>
 			<VideoList videos={videos} />
 		</>
 	);
