@@ -23,7 +23,7 @@ const VideoDetailContainer = styled.div`
 
 const VideoDetail = ({ video }) => {
 	const { userInfo } = useSelector((state) => state.userLogin);
-	const isCreator = userInfo?.id === video.creator._id;
+	const isCreator = userInfo?.id === video.creator?._id;
 
 	return (
 		<VideoDetailContainer>
@@ -36,14 +36,14 @@ const VideoDetail = ({ video }) => {
 				<h5 className='video-title'>{video.title}</h5>
 				<Link
 					to={
-						video.creator._id === userInfo?.id
+						video.creator?._id === userInfo?.id
 							? `/profile`
-							: `/users/${video.creator._id}`
+							: `/users/${video.creator?._id}`
 					}
 				>
-					{video.creator.name}
+					{video.creator?.name}
 				</Link>
-				<p>{video.creator.email}</p>
+				<p>{video.creator?.email}</p>
 				{isCreator && (
 					<Link to={`/videos/${video._id}/edit`}>
 						<button>비디오 수정하기</button>

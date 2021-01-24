@@ -70,13 +70,13 @@ const VideoList = ({ videos }) => {
 						<em> by</em>
 						<Link
 							to={
-								video.creator._id === userInfo?.id
+								video.creator?._id === userInfo?.id
 									? `/profile`
-									: `/users/${video.creator._id}`
+									: `/users/${video.creator?._id}`
 							}
 							className='card-creator'
 						>
-							<em className='card-creator'> {video.creator.name}</em>
+							<em className='card-creator'> {video.creator?.name}</em>
 						</Link>
 					</div>
 				</div>
