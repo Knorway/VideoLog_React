@@ -9,6 +9,7 @@ const passportConfig = require('./passport/index');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const path = require('path');
 
 const app = express();
 
@@ -19,7 +20,7 @@ connectDb();
 passportConfig();
 // -------------------------- #
 
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -43,6 +44,18 @@ app.use(passport.session());
 
 app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+
+// ----------------Ready for Deploy---------------- #
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(path.resolve('frontend', 'build')));
+
+	app.get('*', (req, res) => {
+		res.sendFile(path.resolve('frontend', 'build', 'index.html'));
+	});
+} else {
+	app.get('/', (req, res) => res.send('API is running...'));
+}
+// ------------------------------------------------ #
 
 const PORT = process.env.PORT || 4000;
 

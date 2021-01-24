@@ -69,7 +69,7 @@ const Comment = ({ comment, userId, videoId, refetch }) => {
 	);
 
 	const onDelete = async () => {
-		if (window.confirm('are you sure to delete this comment?')) {
+		if (window.confirm('정말 코멘트를 삭제하시겠습니까?')) {
 			fetchData();
 		}
 	};

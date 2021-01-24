@@ -48,7 +48,9 @@ const VideoRecorder = () => {
 	};
 
 	const startRecording = () => {
-		videoRecorder = new MediaRecorder(stream);
+		videoRecorder = new MediaRecorder(stream, {
+			mimeType: 'video/webm;codecs=h264,vp9,opus',
+		});
 		videoRecorder.addEventListener('dataavailable', handleVideoData);
 		videoRecorder.start();
 	};

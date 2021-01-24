@@ -101,7 +101,7 @@ export const LoginForm = ({ dispatch, history }) => {
 export const JoinForm = ({ dispatch, userLogin, history }) => {
 	const [form, onChange, resetForm] = useForms(initialState);
 	const [state, REQUEST, SUCCESS, FAILURE] = useAsync();
-	const { loading, data, error } = state;
+	const { loading, error } = state;
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -167,26 +167,30 @@ export const JoinForm = ({ dispatch, userLogin, history }) => {
 
 export const UploadForm = ({ dispatch, userLogin }) => {
 	const [form, onChange] = useForms(initialState);
+	const [state, REQUEST, SUCCESS, FAILURE] = useAsync();
+	const { loading } = state;
 	const history = useHistory();
 
-	// useAsync refactoring
 	const onSubmit = async (e) => {
 		try {
 			e.preventDefault();
+			REQUEST();
 			const formData = new FormData();
 			formData.append('videoFile', form.videoFile);
 			formData.append('form', JSON.stringify(form));
 
 			const { data: video } = await axios.post('/api/videos', formData);
+			SUCCESS();
 			history.push(`/videos/${video.id}`);
 		} catch (error) {
-			console.log(error);
+			FAILURE();
 		}
 	};
 
 	return (
 		<FormsContainer>
 			<form onSubmit={onSubmit}>
+				{loading && <Loader />}
 				<label htmlFor='videoUploadInput'>비디오 파일 선택</label>
 				<input
 					type='file'
@@ -227,7 +231,7 @@ export const EditForm = ({ history, dispatch, userLogin, id }) => {
 
 	const onDelete = async (e) => {
 		e.preventDefault();
-		if (window.confirm('are you sure to delete this video?')) {
+		if (window.confirm('정말 포스트를 삭제하시겠습니까?')) {
 			await axios.delete(`/api/videos/${id}`);
 			history.push('/');
 		}
@@ -239,14 +243,14 @@ export const EditForm = ({ history, dispatch, userLogin, id }) => {
 				<h4>Edit Video</h4>
 				<input
 					type='text'
-					placeholder='title'
+					placeholder='제목'
 					name='title'
 					required
 					onChange={onChange}
 				/>
 				<textarea
 					name='description'
-					placeholder='description'
+					placeholder='내용'
 					required
 					onChange={onChange}
 				/>
