@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import VideoList from '../components/VideoList';
 import axios from 'axios';
 import Loader from '../components/Loader';

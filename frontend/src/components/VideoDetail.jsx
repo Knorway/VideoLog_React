@@ -24,7 +24,6 @@ const VideoDetailContainer = styled.div`
 const VideoDetail = ({ video }) => {
 	const { userInfo } = useSelector((state) => state.userLogin);
 	const isCreator = userInfo?.id === video.creator._id;
-	console.log(userInfo, video.creator._id);
 
 	return (
 		<VideoDetailContainer>

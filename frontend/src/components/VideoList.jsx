@@ -43,6 +43,9 @@ const VideoListGrid = styled.div`
 			.card-creator {
 				/* color: #5c7cfa; */
 				text-decoration: none;
+				font-style: normal;
+				font-size: 14px;
+				font-weight: 100;
 			}
 		}
 	}
